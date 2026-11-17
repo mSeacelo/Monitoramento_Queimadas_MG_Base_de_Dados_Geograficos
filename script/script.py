@@ -6,6 +6,8 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import unicodedata
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -20,6 +22,14 @@ CHAVE_DEDUPLICACAO = ["DataHora", "Satelite", "Latitude", "Longitude"]
 COLUNAS_GEOM_ANTIGAS = ["geom", "the_geom", "geometry", "wkt", "ewkt", "srid"]
 SRID_PADRAO = 4674
 
+
+
+def remover_acentos(texto: str) -> str:
+    """Remove acentos e cedilhas mantendo apenas caracteres ASCII."""
+    if pd.isna(texto):
+        return texto
+    normalizado = unicodedata.normalize("NFKD", str(texto))
+    return "".join(c for c in normalizado if not unicodedata.combining(c))
 
 def carregar_dados(caminho_entrada: Path) -> pd.DataFrame:
     if not caminho_entrada.exists():
@@ -51,6 +61,7 @@ def limpar_e_filtrar(df: pd.DataFrame, estado_filtro: str = "MINAS GERAIS") -> p
         if col in df.columns:
             df[col] = df[col].astype("string").str.strip()
             df[col] = df[col].replace({"": pd.NA, "NULL": pd.NA, "null": pd.NA})
+            df[col] = df[col].map(remover_acentos, na_action="ignore")
 
     if "Estado" in df.columns:
         df["Estado"] = df["Estado"].str.upper()
@@ -73,7 +84,8 @@ def limpar_e_filtrar(df: pd.DataFrame, estado_filtro: str = "MINAS GERAIS") -> p
 
     total_antes_filtro = len(df)
     if estado_filtro and "Estado" in df.columns:
-        df = df[df["Estado"] == estado_filtro.upper()]
+        estado_normalizado = remover_acentos(estado_filtro).strip().upper()
+        df = df[df["Estado"] == estado_normalizado]
 
     df = df.dropna(subset=["Latitude", "Longitude"])
     df = df[
