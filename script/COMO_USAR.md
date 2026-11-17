@@ -1,4 +1,4 @@
-# Tratamento e Padronização de Dados 
+# Tratamento e Padronização de Dados
 
 Script em Python para limpeza, filtragem e tratamento de valores ausentes (`-999` → `NULL`), remoção de duplicatas e geração de geometria espacial em formato **EWKT** (`SRID=4674`).
 
@@ -17,7 +17,7 @@ pip install pandas openpyxl numpy
 No terminal, a partir da pasta raiz do projeto, execute o comando indicando o arquivo de entrada (`-i`) e o caminho de saída (`-o`):
 
 ```bash
- python script.py -i queimadas_por_estado/queimadas_minas_gerais.xlsx -o output/queimadas_minas_gerais.csv --estado "" --srid 4674   
+python script/script.py -i queimadas_por_estado/queimadas_minas_gerais.xlsx -o output/queimadas_minas_gerais.csv --estado "" --srid 4674   
 ```
 
 
