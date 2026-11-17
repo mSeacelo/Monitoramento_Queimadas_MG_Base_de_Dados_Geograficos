@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 COLUNAS_NUMERICAS = ["DiaSemChuva", "Precipitacao", "RiscoFogo", "FRP", "Latitude", "Longitude"]
 COLUNAS_TEXTO = ["Satelite", "Pais", "Estado", "Municipio", "Bioma"]
 CHAVE_DEDUPLICACAO = ["DataHora", "Satelite", "Latitude", "Longitude"]
+COLUNAS_GEOM_ANTIGAS = ["geom", "the_geom", "geometry", "wkt", "ewkt", "srid"]
 SRID_PADRAO = 4674
 
 
@@ -104,7 +105,7 @@ def limpar_e_filtrar(df: pd.DataFrame, estado_filtro: str = "MINAS GERAIS") -> p
 
 def adicionar_geometria_ewkt(df: pd.DataFrame, srid: int = SRID_PADRAO) -> pd.DataFrame:
     """Gera coluna 'geom' no formato EWKT: SRID=4326;POINT(Longitude Latitude)."""
-    df = df.copy()
+    df = df.drop(columns=[c for c in df.columns if c.lower() in COLUNAS_GEOM_ANTIGAS])
     df["geom"] = (
             f"SRID={srid};POINT("
             + df["Longitude"].map(lambda x: f"{x:.6f}")
@@ -161,7 +162,6 @@ def parse_args() -> argparse.Namespace:
         help="Código EPSG/SRID da geometria EWKT (padrão: 4674).",
     )
     return parser.parse_args()
-
 
 if __name__ == "__main__":
     args = parse_args()
