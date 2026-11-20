@@ -4,10 +4,12 @@ CREATE DATABASE coletas;
 CREATE EXTENSION postgis;
 
 --------------------------
+-- Table: public.focos_incendios
+
 CREATE TABLE IF NOT EXISTS public.focos_incendios
 (
-    id serial NOT NULL,
-
+    fid bigint NOT NULL,
+    geom geometry(Point,4674),
     datahora character varying(80) COLLATE pg_catalog."default",
     satelite character varying(100) COLLATE pg_catalog."default",
     pais character varying(100) COLLATE pg_catalog."default",
@@ -20,11 +22,10 @@ CREATE TABLE IF NOT EXISTS public.focos_incendios
     frp numeric,
     latitude numeric,
     longitude numeric,
-    bioma_id integer,
-    municipio_id integer,
-    CONSTRAINT focos_incendios_pkey PRIMARY KEY (id)
+    bioma_fid bigint,
+    municipio_fid bigint,
+    CONSTRAINT focos_incendios_pkey PRIMARY KEY (fid)
     )
-
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.focos_incendios
@@ -33,12 +34,10 @@ ALTER TABLE IF EXISTS public.focos_incendios
 
 -- Table: public.municipios
 
--- DROP TABLE IF EXISTS public.municipios;
-
 CREATE TABLE IF NOT EXISTS public.municipios
 (
-    id serial NOT NULL,
-geom geometry(Point,4674),    geom geometry(MultiPolygon,4674),
+    fid bigint NOT NULL,
+    geom geometry(MultiPolygon,4674),
     cd_mun character varying(7) COLLATE pg_catalog."default",
     nm_mun character varying(100) COLLATE pg_catalog."default",
     cd_rgi character varying(6) COLLATE pg_catalog."default",
@@ -54,9 +53,8 @@ geom geometry(Point,4674),    geom geometry(MultiPolygon,4674),
     cd_concurb character varying(7) COLLATE pg_catalog."default",
     nm_concurb character varying(100) COLLATE pg_catalog."default",
     area_km2 double precision,
-    CONSTRAINT municipios_pkey PRIMARY KEY (id)
+    CONSTRAINT municipios_pkey PRIMARY KEY (fid)
     )
-
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.municipios
@@ -65,33 +63,36 @@ ALTER TABLE IF EXISTS public.municipios
 
 -- Table: public.biomas
 
--- DROP TABLE IF EXISTS public.biomas;
-
 CREATE TABLE IF NOT EXISTS public.biomas
 (
-    id serial NOT NULL,
+    fid bigint NOT NULL,
     geom geometry(MultiPolygon,4674),
     "CD_BIOMA" character varying(1) COLLATE pg_catalog."default",
     "NM_BIOMA" character varying(100) COLLATE pg_catalog."default",
-    CONSTRAINT biomas_pkey PRIMARY KEY (id)
+    CONSTRAINT biomas_pkey PRIMARY KEY (fid)
     )
-
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.biomas
     OWNER to postgres;
 
+
+-- Chaves Estrangeiras (Foreign Keys)
+
 ALTER TABLE IF EXISTS public.focos_incendios
-    ADD CONSTRAINT fk_focos_bioma FOREIGN KEY (bioma_id)
-    REFERENCES public.biomas (id) MATCH SIMPLE
+    ADD CONSTRAINT fk_focos_bioma FOREIGN KEY (bioma_fid)
+    REFERENCES public.biomas (fid) MATCH SIMPLE
     ON UPDATE NO ACTION
        ON DELETE NO ACTION;
 
 ALTER TABLE IF EXISTS public.focos_incendios
-    ADD CONSTRAINT fk_focos_municipio FOREIGN KEY (municipio_id)
-    REFERENCES public.municipios (id) MATCH SIMPLE
+    ADD CONSTRAINT fk_focos_municipio FOREIGN KEY (municipio_fid)
+    REFERENCES public.municipios (fid) MATCH SIMPLE
     ON UPDATE NO ACTION
        ON DELETE NO ACTION;
+
+
+-- Índices (Indexes)
 
 CREATE INDEX IF NOT EXISTS idx_focos_incendios_geom
     ON public.focos_incendios USING gist
@@ -108,21 +109,19 @@ CREATE INDEX IF NOT EXISTS idx_biomas_geom
     (geom)
     TABLESPACE pg_default;
 
-CREATE INDEX IF NOT EXISTS idx_focos_incendios_bioma_id
+CREATE INDEX IF NOT EXISTS idx_focos_incendios_bioma_fid
     ON public.focos_incendios USING btree
-    (bioma_id ASC NULLS LAST)
+    (bioma_fid ASC NULLS LAST)
     TABLESPACE pg_default;
 
-CREATE INDEX IF NOT EXISTS idx_focos_incendios_municipio_id
+CREATE INDEX IF NOT EXISTS idx_focos_incendios_municipio_fid
     ON public.focos_incendios USING btree
-    (municipio_id ASC NULLS LAST)
+    (municipio_fid ASC NULLS LAST)
     TABLESPACE pg_default;
 
 
---- SELECT * FROM biomas;
---- SELECT * FROM municipios;
---- SELECT * FROM focos_incendios;
---- SELECT * FROM public.spatial_ref_sys;
-
-
+SELECT * FROM biomas;
+SELECT * FROM municipios;
+SELECT * FROM focos_incendios;
+SELECT * FROM public.spatial_ref_sys;
 
