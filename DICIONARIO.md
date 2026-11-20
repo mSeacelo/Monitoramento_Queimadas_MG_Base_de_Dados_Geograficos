@@ -1,0 +1,16 @@
+# Dicionário de Dados — Sistema de Monitoramento de Queimadas em Minas Gerais
+
+## B.1 Visão geral da base
+
+| Campo | Descrição |
+|---|---|
+| **Título** | Sistema de monitoramento de queimadas no estado de Minas Gerais (`monitoramento_queimadas_mg`) |
+| **Descrição e finalidade** | Base de dados geográficos que reúne os limites dos municípios de Minas Gerais, os focos de queimadas detectados por satélite e a delimitação dos biomas. Sua finalidade é apoiar a visualização e a análise espacial e temporal da ocorrência de focos de calor no estado, permitindo relacionar os registros aos municípios e aos biomas em que estão localizados. |
+| **Fontes de dados** | **Municípios de Minas Gerais:** IBGE — Malha Municipal Digital.<br>**Focos de queimadas:** INPE — Programa Queimadas / Banco de Dados de Queimadas (BDQueimadas), dados de focos de calor detectados por satélite, disponibilizados em CSV.<br>**Biomas:** IBGE — base cartográfica de Biomas do Brasil. |
+| **Data de coleta** | Dados de municípios e focos de queimadas: 19/11/2026. Dados de biomas: 16/11/2026. |
+| **Licença** | Dados obtidos de órgãos públicos e disponibilizados para uso público. Atribuição das fontes originais e observância das condições de uso indicadas nos metadados e nas páginas de cada conjunto de dados. Recomenda-se manter junto ao projeto os metadados e os termos de uso originais. |
+| **Cobertura espacial** | 853 municípios do estado de Minas Gerais, Brasil. |
+| **Cobertura temporal** | Focos de queimadas registrados entre 18/11/2025 e 19/11/2026. As camadas de municípios e biomas representam recortes cartográficos de referência, não uma série histórica. |
+| **SRID e justificativa** | **EPSG:4674 — SIRGAS 2000.** Sistema de referência geodésico oficial do Brasil e utilizado nas bases cartográficas do IBGE. A adoção de um único sistema de referência facilita a sobreposição e a análise espacial entre as camadas. |
+| **Escala e precisão** | **Municípios e biomas:** malha municipal em escala de referência 1:250.000.<br>**Focos de queimadas:** são pontos derivados de pixels de imagens de satélite; portanto, não possuem escala cartográfica única equivalente à de uma carta municipal. A resolução espacial e o erro de localização variam conforme o satélite e o sensor. O INPE informa pixels com dimensões que podem variar aproximadamente de 375 m × 375 m a 5 km × 4 km, e ressalta que a imprecisão de localização também varia conforme o sensor. |
+| **Tratamentos aplicados** | 1. Organização das camadas de municípios, biomas e focos de queimadas para utilização no QGIS.<br>2. Padronização do sistema de referência espacial para EPSG:4674 (SIRGAS 2000), verificando o SRC de origem de cada camada.<br>3. Verificação da validade das geometrias com a ferramenta **Verificar validade** (*Check validity*).<br>4. Correção das geometrias identificadas como inválidas com **Corrigir geometrias** (*Fix geometries*), quando necessário.<br>5. Verificação de registros/geometrias duplicados e remoção somente quando confirmados como duplicatas.<br>6. Preparação das camadas para importação e armazenamento no PostGIS.<br>7. Relacionamento espacial dos focos com os polígonos de municípios e biomas, quando realizado, para identificar a unidade territorial e o bioma correspondentes a cada foco. |
