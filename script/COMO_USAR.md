@@ -10,6 +10,8 @@ Python 3.9+ instalado e dependências necessárias:
 
 ```bash
 pip install pandas openpyxl numpy
+
+pip install geopandas
 ```
 
 ## Como Executar
