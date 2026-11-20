@@ -36,7 +36,7 @@ ALTER TABLE IF EXISTS public.focos_incendios
 
 CREATE TABLE IF NOT EXISTS public.municipios
 (
-    fid integer NOT NULL,
+    fid serial NOT NULL,
     geom geometry(MultiPolygon,4674),
     cd_mun character varying(7) COLLATE pg_catalog."default",
     nm_mun character varying(100) COLLATE pg_catalog."default",
