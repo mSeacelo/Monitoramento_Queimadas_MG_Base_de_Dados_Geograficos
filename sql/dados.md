@@ -24,5 +24,5 @@ ogr2ogr -f PostgreSQL   PG:"host=localhost port=5432 dbname=coletas user=<SEU_US
 
 ogr2ogr -f PostgreSQL   PG:"host=localhost port=5432 dbname=coletas user=<SEU_USUÁRIO> password=<SUA _SENHA>"   dados/tratados/municipios_tratados.gpkg municipios_tratados   -nln public.municipios  -lco GEOMETRY_NAME=geom
 
-ogr2ogr -f PostgreSQL   PG:"host=localhost port=5432 dbname=coletas user=<SEU_USUÁRIO> password=<SUA _SENHA>"   dados/tratados/focos_queimadas_tratados.gpkg foco_queimadas   -nln public.focos_queimadas  -lco GEOMETRY_NAME=geom
+ogr2ogr -f PostgreSQL   PG:"host=localhost port=5432 dbname=coletas user=<SEU_USUÁRIO> password=<SUA _SENHA>"   dados/tratados/focos_queimadas_tratados.gpkg foco_queimadas   -nln public.focos_incendios -lco GEOMETRY_NAME=geom
 ```
