@@ -7,7 +7,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import unicodedata
-
+import geopandas as gpd
 
 logging.basicConfig(
     level=logging.INFO,
@@ -23,13 +23,13 @@ COLUNAS_GEOM_ANTIGAS = ["geom", "the_geom", "geometry", "wkt", "ewkt", "srid"]
 SRID_PADRAO = 4674
 
 
-
 def remover_acentos(texto: str) -> str:
     """Remove acentos e cedilhas mantendo apenas caracteres ASCII."""
     if pd.isna(texto):
         return texto
     normalizado = unicodedata.normalize("NFKD", str(texto))
     return "".join(c for c in normalizado if not unicodedata.combining(c))
+
 
 def carregar_dados(caminho_entrada: Path) -> pd.DataFrame:
     if not caminho_entrada.exists():
@@ -46,8 +46,17 @@ def carregar_dados(caminho_entrada: Path) -> pd.DataFrame:
         )
     elif sufixo in {".xlsx", ".xlsm", ".xls"}:
         df = pd.read_excel(caminho_entrada, sheet_name=0, engine="openpyxl")
+    elif sufixo == ".shp":
+        gdf = gpd.read_file(caminho_entrada)
+        if gdf.crs is not None and gdf.crs.to_epsg() != SRID_PADRAO:
+            gdf = gdf.to_crs(epsg=SRID_PADRAO)
+        if "Longitude" not in gdf.columns and gdf.geometry is not None:
+            gdf["Longitude"] = gdf.geometry.x
+        if "Latitude" not in gdf.columns and gdf.geometry is not None:
+            gdf["Latitude"] = gdf.geometry.y
+        df = pd.DataFrame(gdf.drop(columns=["geometry"], errors="ignore"))
     else:
-        raise ValueError(f"Formato não suportado: {sufixo}. Utilize .csv, .xlsx ou .xlsm.")
+        raise ValueError(f"Formato não suportado: {sufixo}. Utilize .csv, .xlsx, .xlsm ou .shp.")
 
     logger.info("Registos carregados: %d", len(df))
     return df
@@ -74,12 +83,12 @@ def limpar_e_filtrar(df: pd.DataFrame, estado_filtro: str = "MINAS GERAIS") -> p
         logger.warning("A remover %d registos com DataHora inválida.", invalidos_data)
         df = df.dropna(subset=["DataHora"])
 
-    for col in COLUNAS_NUMERICAS:
-        if col in df.columns:
-            df[col] = pd.to_numeric(df[col], errors="coerce")
+    cols_num_presentes = [c for c in COLUNAS_NUMERICAS if c in df.columns]
+    for col in cols_num_presentes:
+        df[col] = pd.to_numeric(df[col], errors="coerce")
 
-    qtd_999 = (df[COLUNAS_NUMERICAS] == -999).sum().sum()
-    df[COLUNAS_NUMERICAS] = df[COLUNAS_NUMERICAS].replace([-999, -999.0], np.nan)
+    qtd_999 = (df[cols_num_presentes] == -999).sum().sum()
+    df[cols_num_presentes] = df[cols_num_presentes].replace([-999, -999.0], np.nan)
     logger.info("Valores sentinela -999 convertidos para NULL: %d", int(qtd_999))
 
     total_antes_filtro = len(df)
@@ -96,13 +105,14 @@ def limpar_e_filtrar(df: pd.DataFrame, estado_filtro: str = "MINAS GERAIS") -> p
     logger.info(
         "Registos removidos na filtragem espacial/estado: %d",
         total_antes_filtro - len(df),
-        )
-
+    )
     total_antes_dedup = len(df)
     df = df.drop_duplicates()
+    chaves_presentes = [c for c in CHAVE_DEDUPLICACAO if c in df.columns]
+    if "FRP" in df.columns:
+        df = df.sort_values(by="FRP", ascending=False, na_position="last")
     df = (
-        df.sort_values(by="FRP", ascending=False, na_position="last")
-        .drop_duplicates(subset=CHAVE_DEDUPLICACAO, keep="first")
+        df.drop_duplicates(subset=chaves_presentes, keep="first")
         .sort_values(by="DataHora", ascending=True)
         .reset_index(drop=True)
     )
@@ -110,7 +120,7 @@ def limpar_e_filtrar(df: pd.DataFrame, estado_filtro: str = "MINAS GERAIS") -> p
         "Duplicados removidos: %d (restantes: %d)",
         total_antes_dedup - len(df),
         len(df),
-        )
+    )
 
     return df
 
@@ -136,10 +146,19 @@ def executar_pipeline(
 ) -> None:
     df = carregar_dados(caminho_entrada)
     df_limpo = limpar_e_filtrar(df, estado_filtro=estado_filtro)
-    df_final = adicionar_geometria_ewkt(df_limpo, srid=srid)
-
     caminho_saida.parent.mkdir(parents=True, exist_ok=True)
-    df_final.to_csv(caminho_saida, index=False, encoding="utf-8", na_rep="NULL")
+    if caminho_saida.suffix.lower() == ".gpkg":
+        df_base = df_limpo.drop(columns=[c for c in df_limpo.columns if c.lower() in COLUNAS_GEOM_ANTIGAS])
+        gdf_final = gpd.GeoDataFrame(
+            df_base,
+            geometry=gpd.points_from_xy(df_base["Longitude"], df_base["Latitude"]),
+            crs=f"EPSG:{srid}",
+        )
+        gdf_final.to_file(caminho_saida, driver="GPKG")
+    else:
+        df_final = adicionar_geometria_ewkt(df_limpo, srid=srid)
+        df_final.to_csv(caminho_saida, index=False, encoding="utf-8", na_rep="NULL")
+
     logger.info("Ficheiro tratado guardado com sucesso em: %s", caminho_saida)
 
 
@@ -174,6 +193,7 @@ def parse_args() -> argparse.Namespace:
         help="Código EPSG/SRID da geometria EWKT (padrão: 4674).",
     )
     return parser.parse_args()
+
 
 if __name__ == "__main__":
     args = parse_args()
