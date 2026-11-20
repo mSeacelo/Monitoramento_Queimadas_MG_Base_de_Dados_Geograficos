@@ -1,3 +1,5 @@
+CREATE EXTENSION postgis;
+
 -- Table: public.focos_incendios
 
 -- DROP TABLE IF EXISTS public.focos_incendios;
