@@ -20,9 +20,9 @@ sudo apt install gdal-bin
 **OBS**: substitua os dados de acesso ao PostgresSQL pelo seu usuário e senha utilizado.
 
 ```bash
-ogr2ogr -f PostgreSQL   PG:"host=localhost port=5432 dbname=coletas user=<SEU_USUÁRIO> password=<SUA _SENHA>"   dados/tratados/biomas_tratados.gpkg biomas_tratados   -nln public.biomas   -lco GEOMETRY_NAME=geom
+ogr2ogr -f PostgreSQL   PG:"host=localhost port=5432 dbname=coletas user=<SEU_USUÁRIO> password=<SUA _SENHA>"   dados/tratados/biomas_tratados.gpkg biomas_tratados   -nln public.biomas   -lco GEOMETRY_NAME=geom -append -preserve_fid
 
-ogr2ogr -f PostgreSQL   PG:"host=localhost port=5432 dbname=coletas user=<SEU_USUÁRIO> password=<SUA _SENHA>"   dados/tratados/municipios_tratados.gpkg municipios_tratados   -nln public.municipios  -lco GEOMETRY_NAME=geom
+ogr2ogr -f PostgreSQL   PG:"host=localhost port=5432 dbname=coletas user=<SEU_USUÁRIO> password=<SUA _SENHA>"   dados/tratados/municipios_tratados.gpkg municipios_tratados   -nln public.municipios  -lco GEOMETRY_NAME=geom -append -preserve_fid
 
-ogr2ogr -f PostgreSQL   PG:"host=localhost port=5432 dbname=coletas user=<SEU_USUÁRIO> password=<SUA _SENHA>"   dados/tratados/focos_queimadas_tratados.gpkg foco_queimadas   -nln public.focos_incendios -lco GEOMETRY_NAME=geom
+ogr2ogr -f PostgreSQL   PG:"host=localhost port=5432 dbname=coletas user=<SEU_USUÁRIO> password=<SUA _SENHA>"   dados/tratados/focos_queimadas_tratados.gpkg foco_queimadas   -nln public.focos_incendios -lco GEOMETRY_NAME=geom -append -preserve_fid
 ```
