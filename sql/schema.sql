@@ -7,8 +7,7 @@ CREATE EXTENSION postgis;
 CREATE TABLE IF NOT EXISTS public.focos_incendios
 (
     id serial NOT NULL,
-    geom geometry(Point,4674),
-    fid bigint,
+
     datahora character varying(80) COLLATE pg_catalog."default",
     satelite character varying(100) COLLATE pg_catalog."default",
     pais character varying(100) COLLATE pg_catalog."default",
@@ -39,8 +38,7 @@ ALTER TABLE IF EXISTS public.focos_incendios
 CREATE TABLE IF NOT EXISTS public.municipios
 (
     id serial NOT NULL,
-    geom geometry(MultiPolygon,4674),
-    fid bigint,
+geom geometry(Point,4674),    geom geometry(MultiPolygon,4674),
     cd_mun character varying(7) COLLATE pg_catalog."default",
     nm_mun character varying(100) COLLATE pg_catalog."default",
     cd_rgi character varying(6) COLLATE pg_catalog."default",
@@ -73,7 +71,6 @@ CREATE TABLE IF NOT EXISTS public.biomas
 (
     id serial NOT NULL,
     geom geometry(MultiPolygon,4674),
-    fid bigint,
     "CD_BIOMA" character varying(1) COLLATE pg_catalog."default",
     "NM_BIOMA" character varying(100) COLLATE pg_catalog."default",
     CONSTRAINT biomas_pkey PRIMARY KEY (id)
