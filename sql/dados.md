@@ -3,17 +3,40 @@
 **1.** Verifique se **ogr2ogr** está instalado:
 
 ```bash
+Linux
+
 ogr2ogr --version
 
 ogrinfo --formats | grep PostgreSQL # verifica se o driver do PostgreSQL está disponível
 ```
 
+```bash
+Windows
+
+Use o terminal OSGeo4w Shell  # o terminal é instalado junto com o QGIS, utilizar outros terminais exige configurações de variáveis de ambiente
+
+ogr2ogr --version
+
+ogrinfo --formats | findstr PostgreSQL # verifica se o driver do PostgresSQL está disponível
+
+```
+
+
 Se não tiver instalado:
 
 ```bash
+Linux
+
 sudo apt update
 sudo apt install gdal-bin
 ```
+
+````bash
+Windows
+
+winget install OSGeo.QGIS
+
+````
 
 **2.** Importe os arquivos a partir da **raiz do projeto**:
 
