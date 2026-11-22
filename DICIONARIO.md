@@ -6,7 +6,7 @@
 |---|---|
 | **Título** | Sistema de monitoramento de queimadas no estado de Minas Gerais (`monitoramento_queimadas_mg`) |
 | **Descrição e finalidade** | Base de dados geográficos que reúne os limites dos municípios de Minas Gerais, os focos de queimadas detectados por satélite e a delimitação dos biomas. Sua finalidade é apoiar a visualização e a análise espacial e temporal da ocorrência de focos de calor no estado, permitindo relacionar os registros aos municípios e aos biomas em que estão localizados. |
-| **Fontes de dados** | **Municípios de Minas Gerais:** IBGE — Malhas Territoriais, Malha Municipal Digital (https://www.ibge.gov.br/geociencias/organizacao-do-territorio/malhas-territoriais/15774-malhas.html; arquivos em https://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_municipais/). Ano da malha: [PREENCHER].<br>**Focos de queimadas:** INPE — Programa Queimadas / Banco de Dados de Queimadas (BDQueimadas), dados de focos de calor detectados por satélite, disponibilizados em CSV (https://terrabrasilis.dpi.inpe.br/queimadas/bdqueimadas/).<br>**Biomas:** IBGE — base cartográfica de Biomas do Brasil (https://www.ibge.gov.br/geociencias/informacoes-ambientais/estudos-ambientais/15842-biomas.html; arquivos em https://geoftp.ibge.gov.br/informacoes_ambientais/estudos_ambientais/biomas/vetores/). |
+| **Fontes de dados** | **Municípios de Minas Gerais:** IBGE — Malhas Territoriais, Malha Municipal Digital (https://www.ibge.gov.br/geociencias/organizacao-do-territorio/malhas-territoriais/15774-malhas.html; arquivos em https://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_municipais/).<br>**Focos de queimadas:** INPE — Programa Queimadas / Banco de Dados de Queimadas (BDQueimadas), dados de focos de calor detectados por satélite, disponibilizados em CSV (https://terrabrasilis.dpi.inpe.br/queimadas/bdqueimadas/).<br>**Biomas:** IBGE — base cartográfica de Biomas do Brasil (https://www.ibge.gov.br/geociencias/informacoes-ambientais/estudos-ambientais/15842-biomas.html; arquivos em https://geoftp.ibge.gov.br/informacoes_ambientais/estudos_ambientais/biomas/vetores/). |
 | **Data de coleta** | Dados de municípios e focos de queimadas: 19/11/2026. Dados de biomas: 16/11/2026. |
 | **Licença** | Dados obtidos de órgãos públicos e disponibilizados para uso público. Atribuição das fontes originais e observância das condições de uso indicadas nos metadados e nas páginas de cada conjunto de dados. Recomenda-se manter junto ao projeto os metadados e os termos de uso originais. |
 | **Cobertura espacial** | 853 municípios do estado de Minas Gerais, Brasil. |
@@ -18,34 +18,34 @@
  
 ## B.2 Descrição das tabelas
  
-Resumo da base: 3 tabelas espaciais (`focos_incendios`, `municipios`, `biomas`), com 2 tipos geométricos (`Point` e `MultiPolygon`), todas em SRID 4674. Total de feições: **[PREENCHER: soma dos registros das 3 tabelas]**.
+Resumo da base: 3 tabelas espaciais (`focos_incendios`, `municipios`, `biomas`), com 2 tipos geométricos (`Point` e `MultiPolygon`), todas em SRID 4674. Total de feições: **: soma dos registros das 3 tabelas]**.
  
 ### Tabela `focos_incendios`
  
-Focos de calor detectados por satélite (INPE/BDQueimadas) em Minas Gerais. **Geometria:** Point · **SRID:** 4674 · **Registros:** [PREENCHER]
+Focos de calor detectados por satélite (INPE/BDQueimadas) em Minas Gerais. **Geometria:** Point · **SRID:** 4674 · **Registros:** -
  
 | Coluna | Tipo | Tam. / Domínio | Nulo? | PK / FK | Descrição | Exemplo |
 |---|---|---|---|---|---|---|
 | `fid` | serial (integer) | gerado | Não | PK | Identificador interno do foco. | 1 |
 | `geom` | geometry | Point, 4674 | Não | | Localização do foco (centro do pixel detectado). | (geometria) |
 | `datahora` | varchar | 80 · AAAA/MM/DD HH:MM:SS | Sim |  | Data e hora da detecção do foco, em texto, conforme o CSV do INPE. | 2025/11/18 00:00:00 |
-| `satelite` | varchar | 100 | Sim | | Satélite/sensor que detectou o foco. | [PREENCHER] |
-| `pais` | varchar | 100 | Sim | | País do foco, conforme o INPE. | [PREENCHER] |
-| `estado` | varchar | 100 | Sim | | Estado do foco, conforme o INPE. | [PREENCHER] |
-| `municipio` | varchar | 100 | Sim | | Nome do município do foco, conforme o INPE (texto original; ver `municipio_fid`). | [PREENCHER] |
-| `bioma` | varchar | 100 | Sim | | Nome do bioma do foco, conforme o INPE (texto original; ver `bioma_fid`). | [PREENCHER] |
-| `diasemchuv` | integer | 0 a 120 (nos dados) | Sim |  | Número de dias sem chuva até a detecção do foco. | [PREENCHER] |
-| `precipitac` | numeric | mm · 0 a 143,18 (nos dados) | Sim |  | Precipitação acumulada no dia até o momento da detecção, em milímetros. | [PREENCHER] |
-| `riscofogo` | numeric | 0 a 1 · -999 = sem valor | Sim |  | Risco de fogo previsto para o local e o dia da detecção. O valor -999 é o código do INPE para ausência de cálculo. | [PREENCHER] |
-| `frp` | numeric | MW · 0 a 1974,8 (nos dados) | Sim |  | Potência radiativa do fogo (*Fire Radiative Power*), em megawatts. | [PREENCHER] |
-| `latitude` | numeric | graus decimais | Sim | | Latitude do foco, conforme o CSV original. | [PREENCHER] |
-| `longitude` | numeric | graus decimais | Sim | | Longitude do foco, conforme o CSV original. | [PREENCHER] |
-| `bioma_fid` | bigint | ref. `biomas.fid` | Sim | FK | Bioma em que o foco se localiza. Referencia `biomas.fid`. | [PREENCHER] |
-| `municipio_fid` | bigint | ref. `municipios.fid` | Sim | FK | Município em que o foco se localiza. Referencia `municipios.fid`. | [PREENCHER] |
+| `satelite` | varchar | 100 | Sim | | Satélite/sensor que detectou o foco. | -
+| `pais` | varchar | 100 | Sim | | País do foco, conforme o INPE. | - |
+| `estado` | varchar | 100 | Sim | | Estado do foco, conforme o INPE. | - |
+| `municipio` | varchar | 100 | Sim | | Nome do município do foco, conforme o INPE (texto original; ver `municipio_fid`). | - |
+| `bioma` | varchar | 100 | Sim | | Nome do bioma do foco, conforme o INPE (texto original; ver `bioma_fid`). | -  |
+| `diasemchuv` | integer | 0 a 120 (nos dados) | Sim |  | Número de dias sem chuva até a detecção do foco. | - |
+| `precipitac` | numeric | mm · 0 a 143,18 (nos dados) | Sim |  | Precipitação acumulada no dia até o momento da detecção, em milímetros. | -|
+| `riscofogo` | numeric | 0 a 1 · -999 = sem valor | Sim |  | Risco de fogo previsto para o local e o dia da detecção. O valor -999 é o código do INPE para ausência de cálculo. | - |
+| `frp` | numeric | MW · 0 a 1974,8 (nos dados) | Sim |  | Potência radiativa do fogo (*Fire Radiative Power*), em megawatts. | - |
+| `latitude` | numeric | graus decimais | Sim | | Latitude do foco, conforme o CSV original. | -|
+| `longitude` | numeric | graus decimais | Sim | | Longitude do foco, conforme o CSV original. | - |
+| `bioma_fid` | bigint | ref. `biomas.fid` | Sim | FK | Bioma em que o foco se localiza. Referencia `biomas.fid`. | - |
+| `municipio_fid` | bigint | ref. `municipios.fid` | Sim | FK | Município em que o foco se localiza. Referencia `municipios.fid`. | - |
  
 ### Tabela `municipios`
  
-Limites dos municípios de Minas Gerais (IBGE, Malha Municipal Digital). **Geometria:** MultiPolygon · **SRID:** 4674 · **Registros:** [PREENCHER: esperado 853]
+Limites dos municípios de Minas Gerais (IBGE, Malha Municipal Digital). **Geometria:** MultiPolygon · **SRID:** 4674 · **Registros:**  853]
  
 | Coluna | Tipo | Tam. / Domínio | Nulo? | PK / FK | Descrição | Exemplo |
 |---|---|---|---|---|---|---|
@@ -104,14 +104,14 @@ Limites dos seis biomas brasileiros (IBGE, Biomas do Brasil), em recorte naciona
 | | 6 | Pantanal |
 | `focos_incendios.riscofogo` | -999 | Sem valor calculado (código do INPE) |
 | | 0 a 1 | Risco de fogo previsto |
-| `focos_incendios.satelite` | [PREENCHER: valores distintos] | [PREENCHER] |
+| `focos_incendios.satelite` |
  
 ## B.5 Qualidade e limitações
  
 - **Foco de calor não é queimada confirmada:** cada ponto indica a detecção de calor em um pixel de imagem de satélite; um mesmo incêndio pode gerar vários focos, e queimadas pequenas ou curtas podem não ser detectadas.
 - **Precisão posicional:** a localização do foco é a do pixel, com erro que varia conforme o satélite e o sensor (de centenas de metros a alguns quilômetros).
 - **Nomes de município e bioma em texto:** `focos_incendios.municipio` e `focos_incendios.bioma` vêm do INPE e podem divergir da grafia ou do limite das tabelas `municipios` e `biomas`; para análises, prefira os campos `municipio_fid` e `bioma_fid`.
-- **Focos sem vínculo:** 104.744 focos têm `municipio_fid` ou `bioma_fid` nulo, por não terem sido associados a um polígono das tabelas `municipios` ou `biomas`. [PREENCHER: total de focos e causa, ex.: focos fora de Minas Gerais]
+- **Focos sem vínculo:** 104.744 focos têm `municipio_fid` ou `bioma_fid` nulo, por não terem sido associados a um polígono das tabelas `municipios` ou `biomas`. total de focos e causa, ex.: focos fora de Minas Gerais]
 - **Geometrias:** nas três tabelas, 0 geometrias inválidas (`ST_IsValid`).
 - **Valores ausentes:** `riscofogo` usa -999 para ausência de valor (convenção do INPE); ao calcular médias, filtre `riscofogo >= 0`. Faixas observadas: `diasemchuv` de 0 a 120, `precipitac` de 0 a 143,18 mm, `frp` de 0 a 1974,8 MW.
 - **Biomas em escala nacional:** a tabela `biomas` contém os 6 biomas do Brasil e a `area_km2` é a do bioma inteiro, não só da parte em Minas Gerais.
