@@ -30,33 +30,6 @@ Versões usadas nos testes (Windows):
 - PostGIS 3.7.0 (GEOS 3.15.0, PROJ 9.8.1)
 - GDAL/OGR (`ogr2ogr`) — instalado com o QGIS (OSGeo4W Shell) ou `gdal-bin` no Linux
 
-## Como importar (testado em banco limpo)
-
-Os dados tratados estão em GeoPackage (`dados/tratados/*.gpkg`) e são carregados com `ogr2ogr` (GDAL). No Windows, use o terminal **OSGeo4W Shell** (instalado com o QGIS); no Linux, instale com `sudo apt install gdal-bin`.
-
-```bash
-# 1. criar o banco
-createdb -U postgres coletas
-
-# 2. criar extensão, tabelas, restrições e índices
-psql -U postgres -d coletas -f SQL/esquema.sql
-
-# 3. importar os dados, a partir da raiz do projeto
-#    (substitua <SEU_USUARIO> e <SUA_SENHA>; a ordem importa por causa das chaves estrangeiras)
-ogr2ogr -f PostgreSQL PG:"host=localhost port=5432 dbname=coletas user=<SEU_USUARIO> password=<SUA_SENHA>" dados/tratados/biomas_tratados.gpkg biomas_tratados -nln public.biomas -lco GEOMETRY_NAME=geom -append -preserve_fid
-
-ogr2ogr -f PostgreSQL PG:"host=localhost port=5432 dbname=coletas user=<SEU_USUARIO> password=<SUA_SENHA>" dados/tratados/municipios_tratados.gpkg municipios_tratados -nln public.municipios -lco GEOMETRY_NAME=geom -append -preserve_fid
-
-ogr2ogr -f PostgreSQL PG:"host=localhost port=5432 dbname=coletas user=<SEU_USUARIO> password=<SUA_SENHA>" dados/tratados/focos_queimadas_tratados.gpkg foco_queimadas -nln public.focos_incendios -lco GEOMETRY_NAME=geom -append -preserve_fid
-```
-
-Conferência:
-
-```sql
-SELECT 'municipios' AS tabela, count(*) FROM municipios
-UNION ALL SELECT 'biomas', count(*) FROM biomas
-UNION ALL SELECT 'focos_incendios', count(*) FROM focos_incendios;
-```
 
 ## Estrutura do repositório
 
