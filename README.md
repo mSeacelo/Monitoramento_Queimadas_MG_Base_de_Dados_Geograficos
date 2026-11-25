@@ -8,7 +8,6 @@ Base geográfica no PostGIS com os municípios de Minas Gerais, os biomas e os f
 
 - 3 tabelas espaciais: `focos_incendios` (Point), `municipios` (MultiPolygon), `biomas` (MultiPolygon)
 - SRID: 4674 (SIRGAS 2000)
-- Total de feições: [PREENCHER]
 - Modelo e diagramas: pasta `Artefatos/`
 - Dicionário de dados completo: [DICIONÁRIO.md](DICION%C3%81RIO.md)
 
@@ -19,8 +18,6 @@ Base geográfica no PostGIS com os municípios de Minas Gerais, os biomas e os f
 | Municípios | IBGE — Malha Municipal Digital. Portal: <https://www.ibge.gov.br/geociencias/organizacao-do-territorio/malhas-territoriais/15774-malhas.html> · Arquivos: <https://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_municipais/> | 19/11/2026 | Dados abertos; citar o IBGE |
 | Biomas | IBGE — Biomas do Brasil. Portal: <https://www.ibge.gov.br/geociencias/informacoes-ambientais/estudos-ambientais/15842-biomas.html> · Arquivos: <https://geoftp.ibge.gov.br/informacoes_ambientais/estudos_ambientais/biomas/vetores/> | 16/11/2026 | Dados abertos; citar o IBGE |
 | Focos de queimadas | INPE — Programa Queimadas / BDQueimadas: <https://terrabrasilis.dpi.inpe.br/queimadas/bdqueimadas/> | 19/11/2026 | Dados públicos; citar o INPE |
-
-Ano/versão da malha municipal do IBGE: [PREENCHER]. Detalhes de tratamento no `DICIONÁRIO.md`. Licença: dados abertos de órgãos públicos, com atribuição às fontes (IBGE e INPE).
 
 ## Requisitos
 
